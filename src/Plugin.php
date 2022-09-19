@@ -23,14 +23,7 @@ class Plugin extends \craft\base\Plugin
         ];
     }
 
-    public function init(): void
-    {
-        parent::init();
-
-        $this->setComponents([
-            'mailchimp' => MailchimpService::class,
-        ]);
-
+    private function addFormDataListeners(){
         $shouldSubscribe = null;
         $subscriberEmail = null;
         $subscriberListId = $this->mailchimp->defaultListId;
@@ -73,6 +66,7 @@ class Plugin extends \craft\base\Plugin
             }
         }
 
+        // only consider this 
         if($subscriberEmail != null && $shouldSubscribe != null){
             if($shouldSubscribe){
                 $response = $this->mailchimp->client->lists->setListMember($subscriberList, $subscriberEmail, [
@@ -83,9 +77,20 @@ class Plugin extends \craft\base\Plugin
             } else {
                 $response = $this->mailchimp->client->lists->deleteListMember($subscriberList, $subscriberEmail);
             }
-            
         }
+    }
 
+    public function init(): void
+    {
+        parent::init();
+
+        $this->setComponents([
+            'mailchimp' => MailchimpService::class,
+        ]);
+
+        if (Plugin::getInstance()->is(Plugin::EDITION_PRO)){
+            $this->addFormDataListeners();
+        }
 
         $this->view->hook('craft-mailchimp--subscribe-checkbox', function(array &$context) {
             return '<p>Hey!</p>';
