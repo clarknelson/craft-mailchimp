@@ -1,0 +1,14 @@
+{% import '_includes/forms.twig' as forms %}
+
+{{ forms.textField({
+  first: true,
+  label: 'API Key',
+  name: 'apiKey',
+  value: settings.apiKey
+}) }}
+
+{{ forms.textField({
+  label: 'Data Center',
+  name: 'dataCenter',
+  value: settings.dataCenter
+}) }}

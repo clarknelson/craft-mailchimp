@@ -1,0 +1,49 @@
+{
+    "name": "clarknelson/craft-mailchimp",
+    "description": "A plugin to assist with managing the connection to your MailChimp account.",
+    "type": "craft-plugin",
+    "keywords": [
+      "mailchimp", 
+      "newsletter",
+      "newsletters",
+      "craft",
+      "craft cms", 
+      "craft-plugin",
+      "php"
+    ],
+    "license": "propritary",
+    "authors": [
+      {
+        "name": "Clark Nelson",
+        "homepage": "https://clarknelson.com/"
+      }
+    ],
+    "support": {
+      "email": "email@clarknelson.com",
+      "issues": "https://github.com/developer/repo/issues?state=open",
+      "source": "https://github.com/developer/repo",
+      "docs": "https://github.com/developer/repo/blob/master/README.md"
+    },
+    "require": {
+      "craftcms/cms": "^4.0.0",
+      "php": "^8.0",
+        "mailchimp/marketing": "^3.0"
+    },
+    "autoload": {
+      "psr-4": {
+        "clarknelson\\mailchimp\\": "src/"
+      }
+    },
+    "extra": {
+      "name": "Craft Mailchimp",
+      "handle": "craft-mailchimp",
+      "hasCpSettings": true,
+      "class": "clarknelson\\mailchimp\\Plugin"
+    },
+    "config": {
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true,
+            "craftcms/plugin-installer": true
+        }
+    }
+}
