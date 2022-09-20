@@ -84,6 +84,7 @@ The `MAILCHIMP_SUBSCRIBE_CHECKBOX` field determines whether to subscribe or unsu
 The `MAILCHIMP_SUBSCRIBE_EMAIL` field is the name attribute for the email address input field which will be subscribed to the list. For example:
 
 ```html
+<input type="checkbox" name="mailchimpSubscribe" checked>
 <input type="email" name="emailAddress" placeholder="email@domain.com">
 ```
 
