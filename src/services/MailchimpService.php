@@ -4,7 +4,7 @@ namespace clarknelson\mailchimp\services;
 use yii\base\Component;
 
 use clarknelson\mailchimp\Plugin as CraftMailchimp;
-
+use craft\helpers\App;
 
 class MailchimpLists {
     public function getLists(){
@@ -19,6 +19,7 @@ class MailchimpService extends Component
     public $defaultListId = null;
 
     public function connectSite($id=null){
+
         if (CraftMailchimp::getInstance()->is(CraftMailchimp::EDITION_PRO)){
             $listResponse = $this->client->connectedSites->list();
             if(count($listResponse->sites) == 0){
@@ -42,18 +43,20 @@ class MailchimpService extends Component
                 return $listResponse->sites[0]->site_script->fragment;
             }
         } else {
-            throw new \Exception('Please make sure that the pro version of the Craft Mailchimp plugin has been installed before using craft.mailchimp.connectSite().');
+            // throw new \Exception('Please make sure that the pro version of the Craft Mailchimp plugin has been installed before using craft.mailchimp.connectSite().');
         }
     }
 
     public function init(): void{
         // first get the API key, the minimum for using the plugin.
         $apiKey = CraftMailchimp::getInstance()->settings->apiKey;
+        $apiKey = App::env('MAILCHIMP_API_KEY') ?: $apiKey;
         if(!$apiKey){
             return;
         }
 
         $dataCenter = CraftMailchimp::getInstance()->settings->dataCenter;
+        $dataCenter = App::env('MAILCHIMP_API_PREFEX') ?: $dataCenter;
         if(!$dataCenter){
             // find data center from api key
             $dataCenter = explode('-', $apiKey)[1];
@@ -67,6 +70,7 @@ class MailchimpService extends Component
         ]);
 
         $this->defaultListId = CraftMailchimp::getInstance()->settings->defaultListId;
+        $this->defaultListId = App::env('MAILCHIMP_LIST_ID') ?: $this->defaultListId;
         if(!$this->defaultListId){
             $response = $this->client->lists->getAllLists();
             if(isset($response->lists[0])){
