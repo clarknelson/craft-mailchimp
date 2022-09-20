@@ -46,12 +46,11 @@ class MailchimpService extends Component
         }
     }
 
-    public function init(){
+    public function init(): void{
         // first get the API key, the minimum for using the plugin.
         $apiKey = CraftMailchimp::getInstance()->settings->apiKey;
         if(!$apiKey){
             return;
-            throw new \Exception('There is no API key set for the Mailchimp Plugin, please check the settings.');
         }
 
         $dataCenter = CraftMailchimp::getInstance()->settings->dataCenter;
