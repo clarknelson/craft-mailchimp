@@ -15,10 +15,18 @@ Or they can be provided in a php file `/config/craft-mailchimp.php`:
 ```php
 <?php
 return [
-    'apiKey' => '',
-    'dataCenter' => '',
-    'defaultListId' => '',
+    'apiKey' => 'b3e485720d0fb51f01884d4289e62d15-us10',
+    'dataCenter' => 'us10',
+    'defaultListId' => '2345b79e5f',
 ];
+```
+
+These can also be set in the `.env` which will take highest priority in the load order.
+
+```
+MAILCHIMP_API_KEY=b3e485720d0fb51f01884d4289e62d15-us10
+MAILCHIMP_API_PREFEX=us10
+MAILCHIMP_LIST_ID=2345b79e5f
 ```
 
 The API Key can be found in the Mailchimp Admin panel under your user settings. ds.admin.mailchimp.com/account/api where ds is your accounts data center (ie us10). 

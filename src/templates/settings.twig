@@ -5,7 +5,7 @@
   label: 'API Key',
   name: 'apiKey',
   value: settings.apiKey,
-  instructions: 'Required to make requests to Mailchimp. Typically found in the Mailchimp Admin panel under ds.admin.mailchimp.com/account/api',
+  instructions: 'Required to make requests to Mailchimp. Typically found in the Mailchimp Admin panel under ds.admin.mailchimp.com/account/api. Can also be set with MAILCHIMP_API_KEY in the .env file.',
   placeholder: 'b3e485720d0fb51f01884d4289e62d15-us10',
   required: true,
 }) }}
@@ -13,7 +13,7 @@
 {{ forms.textField({
   label: 'Data Center',
   name: 'dataCenter',
-  instructions: 'Will attempt to find from API key if not specified.',
+  instructions: 'Will attempt to find from API key if not specified. Can be set with MAILCHIMP_API_PREFEX in .env file.',
   placeholder: 'us10',
   value: settings.dataCenter,
 }) }}
@@ -21,7 +21,7 @@
 {{ forms.textField({
   label: 'Default List ID',
   name: 'defaultListId',
-  instructions: 'By default, the first list or audience on your account will be used. To use a specific list, use that Audience ID found at ds.admin.mailchimp.com/lists/settings/default?id=web-id. Do not provide the web id as listed in the URL paramiters, use the "Audience ID" as listed on the settings page.',
+  instructions: 'By default, the first list or audience on your account will be used. To use a specific list, use that Audience ID found at ds.admin.mailchimp.com/lists/settings/default?id=web-id. Can be set with MAILCHIMP_LIST_ID in the .env file.',
   placeholder: '2345b79e5f',
   value: settings.defaultListId
 }) }}
