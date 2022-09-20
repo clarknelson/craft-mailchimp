@@ -29,53 +29,68 @@ class Plugin extends \craft\base\Plugin
         $subscriberListId = $this->mailchimp->defaultListId;
         $mergeFields = [];
 
-        foreach ($this->request->getBodyParams() as $key => $value) {
-            preg_match('/MAILCHIMP_SUBSCRIBE_(.+)/', $key, $matches);
-            if(count($matches) && isset($matches[1])){
-                switch ($matches[1]) {
-                    # determines whether to subscribe 
-                    # or unsubscribe email from list
-                    case 'CHECKBOX':
-                        if(gettype($value) == 'boolean'){
-                            $shouldSubscribe = $value;
-                        } else {
-                            if(isset($_POST[$value])){
-                                $shouldSubscribe = $_POST[$value];
+        # make sure that the request through Craft 
+        # is from the front-end and not the console
+        if($this->request instanceof \craft\web\Request){
+            # look through all body params
+            foreach ($this->request->getBodyParams() as $key => $value) {
+                # search for this specific prefix
+                preg_match('/MAILCHIMP_SUBSCRIBE_(.+)/', $key, $matches);
+                # and only continue if found
+                if(count($matches) && isset($matches[1])){
+                    switch ($matches[1]) {
+                        # determines whether to subscribe 
+                        # or unsubscribe email from list
+                        case 'CHECKBOX':
+                            if(gettype($value) == 'boolean'){
+                                $shouldSubscribe = $value;
+                            } else {
+                                if(isset($_POST[$value])){
+                                    $shouldSubscribe = $_POST[$value];
+                                }
                             }
-                        }
-                        break;
-
-                    # determines what email to add
-                    case 'EMAIL':
-                        if(isset($_POST[$value])){
-                            $subscriberEmail = $_POST[$value];
-                        }
-                        break;
-                    
-                    # determines what list to use
-                    case 'LIST_ID':
-                        $subscriberList = $value;
-                        break;
-                    
-                    default:
-                        if(isset($_POST[$value])){
-                            $mergeFields[$matches[1]] = $_POST[$value];
-                        }
-                        break;
+                            break;
+    
+                        # determines what email to add
+                        case 'EMAIL':
+                            if(isset($_POST[$value])){
+                                $subscriberEmail = $_POST[$value];
+                            }
+                            break;
+                        
+                        # determines what list to use
+                        case 'LIST_ID':
+                            $subscriberList = $value;
+                            break;
+                        
+                        # otherwise it becomes a merge field
+                        default:
+                            if(isset($_POST[$value])){
+                                $mergeFields[$matches[1]] = $_POST[$value];
+                            }
+                            break;
+                    }
                 }
             }
         }
 
-        // only consider this 
+
+        # only consider adding to the list if the email is set
+        # and the checkbox is true/false not null.
         if($subscriberEmail != null && $shouldSubscribe != null){
-            if($shouldSubscribe){
-                $response = $this->mailchimp->client->lists->setListMember($subscriberList, $subscriberEmail, [
-                    "email_address" => $subscriberEmail,
-                    "status_if_new" => "pending",
-                    "merge_fields" => $mergeFields
-                ]);
+            # only continue if the correct version is installed
+            if (Plugin::getInstance()->is(Plugin::EDITION_PRO)){
+                if($shouldSubscribe){
+                    $response = $this->mailchimp->client->lists->setListMember($subscriberList, $subscriberEmail, [
+                        "email_address" => $subscriberEmail,
+                        "status_if_new" => "pending",
+                        "merge_fields" => $mergeFields
+                    ]);
+                } else {
+                    $response = $this->mailchimp->client->lists->deleteListMember($subscriberList, $subscriberEmail);
+                }
             } else {
-                $response = $this->mailchimp->client->lists->deleteListMember($subscriberList, $subscriberEmail);
+                throw new \Exception('Please make sure you have the PRO version of the plugin installed.');
             }
         }
     }
@@ -88,13 +103,7 @@ class Plugin extends \craft\base\Plugin
             'mailchimp' => MailchimpService::class,
         ]);
 
-        if (Plugin::getInstance()->is(Plugin::EDITION_PRO)){
-            $this->addFormDataListeners();
-        }
-
-        $this->view->hook('craft-mailchimp--subscribe-checkbox', function(array &$context) {
-            return '<p>Hey!</p>';
-        });
+        $this->addFormDataListeners();
 
         Event::on(
             CraftVariable::class,
@@ -107,9 +116,9 @@ class Plugin extends \craft\base\Plugin
                 // $variable->attachBehaviors([
                 //     MyBehavior::class,
                 // ]);
+
                 // Attach a service:
                 $variable->set('mailchimp', MailchimpService::class);
-                // $variable->set('mailchimpLists', MailchimpListsService::class);
             }
         );
     }
