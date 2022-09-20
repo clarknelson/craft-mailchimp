@@ -10,7 +10,7 @@ You will want to install this plugin from the command line or the plugin page.
 
 The settings can be provided through the settings page `/admin/settings/plugins/craft-mailchimp`.
 
-Or they can be provided in a php file `config/craft-mailchimp.php`:
+Or they can be provided in a php file `/config/craft-mailchimp.php`:
 
 ```php
 <?php
@@ -21,11 +21,13 @@ return [
 ];
 ```
 
-The API Key can be found in the Mailchimp Admin panel under your user settings. ds.admin.mailchimp.com/account/api where ds is your accounts data center (ie us10). This setting is required for the plugin to work correctly.
+The API Key can be found in the Mailchimp Admin panel under your user settings. ds.admin.mailchimp.com/account/api where ds is your accounts data center (ie us10). 
+
+This setting is required for the plugin to work correctly.
 
 The data center would be the prefix or suffix for the API key, for example us10. This is optional and will try to be parsed from the API key that is provided. 
 
-To use a specific audience on your account, use that list's Audience ID found on the settings page at ds.admin.mailchimp.com/lists/settings/default?id=web-id. Please do not provide the web id as listed in the URL paramiters, use the "Audience ID" as listed on the settings page. By default the first audience on your account will be used, so this may not be required if you are using a single list on your account.
+To use a specific audience on your account, use that list's Audience ID found on the settings page at ds.admin.mailchimp.com/lists/settings/default?id=web-id. By default the first audience on your account will be used, so this may not be required if you are using a single list on your account.
 
 ## Usage
 
@@ -48,15 +50,27 @@ To retrieve all of the audience / lists on the account. You would write the foll
 {% endfor %}
 ```
 
-Which will list each audience on your account linked to it's sign up form. 
+Which will list each audience on your account, linked to it's sign up form. 
 
-While all of the methods should be available, please be very careful running queries. Keep in mind that twig should display data, not modify data, so avoid the POST / PUT / DELETE methods and concentrate on the functions that use GET methods.
+While all of the methods should be available please be very careful running queries. Keep in mind that twig should display data, not modify data, so avoid the POST / PUT / DELETE methods and concentrate on the functions that use GET methods.
 
 The <a href="https://mailchimp.com/developer/marketing/api/lists/">Lists API</a> is a good starting point for figuring out what you want to do.
 
+### Connected Sites (Pro)
+
+This plugin supports connected sites for adding popups and similar elements to your Craft website through the Mailchimp interface.
+
+It is easy to get started, simply add this script to the `<head>` of your document.
+
+```twig
+{{ craft.mailchimp.connectSite() | raw }}
+```
+
+This will output the correct `<script>` tag so your website can connect with Mailchimp. 
+
 ### Form Input Tags (Pro)
 
-I have created a system to help sign up users to a mailchimp list from any form using hidden inputs.
+I have created a system to help sign up users to a Mailchimp list from any form using hidden input fields.
 
 #### Required Tags
 
@@ -65,15 +79,15 @@ I have created a system to help sign up users to a mailchimp list from any form 
 {{ hiddenInput('MAILCHIMP_SUBSCRIBE_EMAIL', 'emailAddress') }}
 ```
 
-The `MAILCHIMP_SUBSCRIBE_CHECKBOX` field determines whether to sign up or unsubscribe a user from the list. This can be true or false, or a string, in which case it will be asummed to be the `name` attribute of a checkbox field which will determine the truthiness. 
+The `MAILCHIMP_SUBSCRIBE_CHECKBOX` field determines whether to subscribe or unsubscribe a user from the list. This can be true or false, or a string in which case it will be asummed to be the `name` attribute of a checkbox field which will determine the truthiness. 
 
-The `MAILCHIMP_SUBSCRIBE_EMAIL` field is a name attribute for the email address which will be subscribed to the list. For example:
+The `MAILCHIMP_SUBSCRIBE_EMAIL` field is the name attribute for the email address input field which will be subscribed to the list. For example:
 
 ```html
 <input type="email" name="emailAddress" placeholder="email@domain.com">
 ```
 
-This way you should be able to add the Mailchimp functionality to an existing form.
+This way you should be able to add the Mailchimp functionality to any existing form.
 
 #### Optional Tags
 
