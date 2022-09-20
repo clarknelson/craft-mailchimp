@@ -11,14 +11,14 @@ class Plugin extends \craft\base\Plugin
 {
     public bool $hasCpSettings = true;
 
-    const EDITION_STANDARD = 'standard';
+    const EDITION_LITE = 'lite';
     const EDITION_PRO = 'pro';
 
 
     public static function editions(): array
     {
         return [
-            self::EDITION_STANDARD,
+            self::EDITION_LITE,
             self::EDITION_PRO,
         ];
     }
