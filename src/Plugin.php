@@ -11,17 +11,16 @@ class Plugin extends \craft\base\Plugin
 {
     public bool $hasCpSettings = true;
 
-    const EDITION_LITE = 'lite';
-    const EDITION_PRO = 'pro';
-
-
-    public static function editions(): array
-    {
-        return [
-            self::EDITION_LITE,
-            self::EDITION_PRO,
-        ];
-    }
+    // const EDITION_STANDARD = 'standard';
+    // const EDITION_LITE = 'lite';
+    // const EDITION_PRO = 'pro';
+    // public static function editions(): array
+    // {
+    //     return [
+    //         self::EDITION_LITE,
+    //         self::EDITION_PRO,
+    //     ];
+    // }
 
     private function addFormDataListeners(){
         $shouldSubscribe = null;
@@ -78,20 +77,22 @@ class Plugin extends \craft\base\Plugin
         # only consider adding to the list if the email is set
         # and the checkbox is true/false not null.
         if($subscriberEmail != null && $shouldSubscribe != null){
-            # only continue if the correct version is installed
-            if (Plugin::getInstance()->is(Plugin::EDITION_PRO)){
-                if($shouldSubscribe){
-                    $response = $this->mailchimp->client->lists->setListMember($subscriberList, $subscriberEmail, [
-                        "email_address" => $subscriberEmail,
-                        "status_if_new" => "pending",
-                        "merge_fields" => $mergeFields
-                    ]);
-                } else {
-                    $response = $this->mailchimp->client->lists->deleteListMember($subscriberList, $subscriberEmail);
-                }
+
+            if($shouldSubscribe){
+                $response = $this->mailchimp->client->lists->setListMember($subscriberList, $subscriberEmail, [
+                    "email_address" => $subscriberEmail,
+                    "status_if_new" => "pending",
+                    "merge_fields" => $mergeFields
+                ]);
             } else {
-                throw new \Exception('Please make sure you have the PRO version of the plugin installed.');
+                $response = $this->mailchimp->client->lists->deleteListMember($subscriberList, $subscriberEmail);
             }
+
+            # only continue if the correct version is installed
+            // if (Plugin::getInstance()->is(Plugin::EDITION_PRO)){
+            // } else {
+            //     throw new \Exception('Please make sure you have the PRO version of the plugin installed.');
+            // }
         }
     }
 
