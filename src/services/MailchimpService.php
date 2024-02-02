@@ -71,14 +71,16 @@ class MailchimpService extends Component
 
         $this->defaultListId = CraftMailchimp::getInstance()->settings->defaultListId;
         $this->defaultListId = App::env('MAILCHIMP_LIST_ID') ?: $this->defaultListId;
-        if(!$this->defaultListId){
-            $response = $this->client->lists->getAllLists();
-            if(isset($response->lists[0])){
-                $this->defaultListId = $response->lists[0]->id;
-            } else {
-                throw new \Exception('Could not find a default list/audience to use. Please check your account to make sure an audience is available.');
-            }
-        }
+
+        // @TODO: throwing 503 error for some reason
+        // if(!$this->defaultListId){
+        //     $response = $this->client->lists->getAllLists();
+        //     if(isset($response->lists[0])){
+        //         $this->defaultListId = $response->lists[0]->id;
+        //     } else {
+        //         throw new \Exception('Could not find a default list/audience to use. Please check your account to make sure an audience is available.');
+        //     }
+        // }
 
     }
 }
