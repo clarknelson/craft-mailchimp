@@ -37,9 +37,7 @@
     "extra": {
       "name": "Craft Mailchimp",
       "handle": "craft-mailchimp",
-      "hasCpSettings": true,
-      "class": "clarknelson\\mailchimp\\Plugin",
-      "basePath": "src"
+      "hasCpSettings": true
     },
     "config": {
         "allow-plugins": {
